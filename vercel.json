@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "routes": [
+    {
+      "src": "/(.*)/$",
+      "dest": "/$1/index.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1.html"
+    },
+    {
+      "src": "/$",
+      "dest": "/index.html"
+    }
+  ]
+}
