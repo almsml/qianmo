@@ -1,0 +1,39 @@
+---
+title: Leetcode20251120 
+description: Leetcode 2025年11月20号每日一题
+pubDate: 04 15 2025                    # 发布日期，格式：MM DD YYYY（月 日 年），单数字不补0
+image: https://raw.githubusercontent.com/almsml/image/main/1affe0bb-dfe2-4153-ae99-8fe5844a05ad.png               # 文章特色图片（可选，但推荐有，用于列表页卡片展示）
+categories:
+  - Leetcode            
+tags:
+  - leetcode
+  - c++                         
+badge: Waline                     
+---
+import LinkCard from "../../components/mdx/LinkCard.astro";
+
+## Original question link:
+<LinkCard
+  title="Leetcode20251120"
+  url="https://leetcode.cn/problems/keep-multiplying-found-values-by-two/?envType=daily-question&envId=2025-11-19"
+  img="https://raw.githubusercontent.com/almsml/image/main/18e32fc9-e2ff-4742-b621-38a965b7f6cb.png"
+/>
+## Problem Analysis：
+题目要我们找到origial的值,每次找到就要将origial的值*2,如果我们暴力对origial进行暴力遍历，也可以解出来，但是时间复杂度是O(n²)，我们可以转换思路，求数组中original的2^k的值，把它存到一个变量x里，最后我们只需要对变量进行倒数遍历，遇到第一个0就代表数组里没有那个值了。
+## Code:
+```astro
+class Solution {
+public:
+    int findFinalValue(vector<int>& nums, int original) {
+        for(int i=0;i<nums.size();i++){
+            for(int j=0;j<nums.size();j++){
+            if(nums[j]==original){
+                original*=2;
+                continue;
+                }
+            }
+        }
+        return original;
+    }
+};
+```
