@@ -1,0 +1,80 @@
+---
+title: Leetcode20251121 
+description: Leetcode 2025年11月21号每日一题
+pubDate: 11 21 2025                    # 发布日期，格式：MM DD YYYY（月 日 年），单数字不补0
+image: https://raw.githubusercontent.com/almsml/image/main/a4b92d29-819f-46d9-9c8f-a467298227d7.png               # 文章特色图片（可选，但推荐有，用于列表页卡片展示）
+categories:
+  - Leetcode            
+tags:
+  - leetcode
+  - c++                         
+badge: Waline                     
+---
+import LinkCard from "../../components/mdx/LinkCard.astro";
+
+## Original question link:
+<LinkCard
+  title="Leetcode20251121"
+  url="https://leetcode.cn/problems/unique-length-3-palindromic-subsequences/description/?envType=daily-question&envId=2025-11-21"
+  img="https://raw.githubusercontent.com/almsml/image/main/18e32fc9-e2ff-4742-b621-38a965b7f6cb.png"
+/>
+## Problem Analysis：
+#### 对于题目，要我们在字符串s中找到长度为3的不同回文子序列,且子序列不能重复。对于这个子序列，我们可以先固定子序列的中间值，然后求这个中间值左右俩边包含的字符是否有重复，重复就记录下来，然后用一个rem[i][j],记录i和j，i为子序列的中间值，j为子序列俩侧的值。
+####  为了确定中间值俩遍是否有重复，我们可以用一个right数组，记录字符串s全部包含的字符个数，每次遍历到i的时候，left数组加上前一个字母的值，right减去当前字母的值。
+## Code:
+```astro
+class Solution {
+public:
+    int countPalindromicSubsequence(string s) {
+        vector<int> right(26);
+        for(auto& x:s)right[int(x)-int('a')]+=1;
+        vector<int> left(26);
+        int ans =0;
+        vector<vector<int>> rem(26,vector<int>(26));
+        for(auto& x:s){
+            right[int(x)-int('a')]-=1;
+            for(int i =0;i<26;i++){
+                if(left[i]&&right[i]&&!rem[int(x)-int('a')][i]){
+                    rem[int(x)-int('a')][i]++;
+                    ans+=1;
+                }
+            }
+            left[int(x)-int('a')]+=1;
+        }
+        return ans;
+    }
+};
+```
+#### 时间复杂度为O(26n)
+#### 空间复杂度为O(|Σ|²),|Σ|=26.
+----------------------------------------------------------------------------------------------------------------
+#### 位优化：
+#### 我们相同的子序列只需要计算一次，所以我们可以用二进制的位数来代表字母，用has[x]来记录中间值为x的时候，我们左右俩边相同字母的二进制数。
+#### 最后我们只需要计算has中所有1的数量。
+```astro
+class Solution {
+public:
+    int countPalindromicSubsequence(string s) {
+        vector<int> cnt(26);
+        int right = 0;
+        for(auto& x:s){
+            cnt[int(x)-int('a')]+=1;
+            right |= 1<<(int(x)-int('a'));
+            }
+        int left =0,ans =0;
+        int has[26]{};
+        for(auto& x:s){
+            cnt[int(x)-int('a')]-=1;
+            if(cnt[int(x)-int('a')]==0)right ^= 1<<(int(x)-int('a'));
+            has[int(x)-int('a')]|=left&right;
+            left|=1<<(int(x)-int('a'));
+        }
+        for (int mask : has) {
+            ans += popcount((uint32_t) mask); 
+        }
+        return ans;
+    }
+};
+```
+#### 时间复杂度为O(n)
+#### 空间复杂度为O(|Σ|),|Σ|=26.
