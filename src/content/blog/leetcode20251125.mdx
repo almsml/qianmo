@@ -1,0 +1,42 @@
+---
+title: Leetcode20251125 
+description: Leetcode 2025年11月21号每日一题
+pubDate: 11 25 2025                    # 发布日期，格式：MM DD YYYY（月 日 年），单数字不补0
+image: https://raw.githubusercontent.com/almsml/image/main/1d129c01-2dac-4cff-9a1b-ace60c575ab6.png          # 文章特色图片（可选，但推荐有，用于列表页卡片展示）
+categories:
+  - Leetcode            
+tags:
+  - leetcode
+  - c++                         
+badge: Waline                     
+---
+import LinkCard from "../../components/mdx/LinkCard.astro";
+
+## Original question link:
+<LinkCard
+  title="Leetcode20251125"
+  url="https://leetcode.cn/problems/smallest-integer-divisible-by-k/description/?envType=daily-question&envId=2025-11-25"
+  img="https://raw.githubusercontent.com/almsml/image/main/18e32fc9-e2ff-4742-b621-38a965b7f6cb.png"
+/>
+## Problem Analysis：
+#### 题目给定了一个正整数k，要我们求可以被k整除的，只包含1的最小正整数长度
+#### 我们可以列举这个正整数的值，比如：1，11，111.....,我们初始化这个正整数为x =1。
+#### 如果可以被k整除的话，x%k==0,否则的话，我们就在x后面添加一个1，再重复进行这个流程，直到等于0.这个过程就相当于，我们有一个无限1的数，我们将他除以k，当我们获得第一个余数0的时候，我们就得到最小的ans的长度了。
+#### 在这个计算的过程中，我们可能会遇到不断循环的过程，所以，我们可以初始化一个map或者set用来记录，如果遇到相同的余数，我们就返回-1；
+## Code:
+```astro
+class Solution {
+public:
+    int smallestRepunitDivByK(int k) {
+        unordered_set<int> seen;
+        int x =1%k;
+        while(x && seen.insert(x).second){
+            x= (x*10+1)%k;
+        }
+        return x?-1:seen.size()+1;
+    }
+};
+```
+#### 时间复杂度为O(k)
+#### 空间复杂度为O(k)
+
