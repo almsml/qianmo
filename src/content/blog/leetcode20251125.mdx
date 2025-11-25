@@ -40,3 +40,28 @@ public:
 #### 时间复杂度为O(k)
 #### 空间复杂度为O(k)
 
+### 快慢指针优化:
+#### 我们如果遇到不存在这样的n的话，我们一定会遇到一个不断循环的环，我们定义一个快慢指针，只要快指针和慢指针重叠，就意味产生了循环，则返回-1；
+```astro
+class Solution {
+public:
+    int smallestRepunitDivByK(int k) {
+        int slow=1%k,fast =1%k;
+        bool x = false;
+        int cnt =0;
+        while(fast!=0){
+            cnt++;
+            fast = (fast*10+1)%k;
+            if(x){
+                slow = (slow*10+1)%k;
+            }
+            x=!x;
+            if(slow==fast)return -1;
+        }
+        return cnt+1;
+    }
+};
+```
+#### 时间复杂度为O(k)
+#### 空间复杂度为O(1)
+
