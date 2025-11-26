@@ -1,0 +1,83 @@
+---
+title: Leetcode20251126
+description: Leetcode 2025年11月26号每日一题
+pubDate: 11 26 2025                    # 发布日期，格式：MM DD YYYY（月 日 年），单数字不补0
+image: https://raw.githubusercontent.com/almsml/image/main/862f648c-98f8-43af-9174-203cfa7dcb20.png          # 文章特色图片（可选，但推荐有，用于列表页卡片展示）
+categories:
+  - Leetcode            
+tags:
+  - leetcode
+  - c++                         
+badge: Waline                     
+---
+import LinkCard from "../../components/mdx/LinkCard.astro";
+
+## Original question link:
+<LinkCard
+  title="Leetcode20251126"
+  url="https://leetcode.cn/problems/paths-in-matrix-whose-sum-is-divisible-by-k/description/?envType=daily-question&envId=2025-11-26"
+  img="https://raw.githubusercontent.com/almsml/image/main/18e32fc9-e2ff-4742-b621-38a965b7f6cb.png"
+/>
+## Problem Analysis：
+#### 题目要我们从(0,0)开始，到(m,n)的时候，能被k整除的路径，我们可以用一个dp[m][n][k]大小的数组来记录在(m,n)那个位置的被k求余后，每个余数的路径数，所以dp[m][n][0]就是能刚好被k整除的路径。
+#### 状态转移方程：dp[i][j][(m+dp[i][j])%k] = dp[i-1][j][m]+ dp[i][j-1][m]
+## Code:
+```astro
+class Solution {
+public:
+    int numberOfPaths(vector<vector<int>>& grid, int k) {
+        vector<vector<vector<int>>> f(grid.size(), vector<vector<int>>(grid[0].size(), vector<int>(k, 0)));
+        f[0][0][grid[0][0]%k]=1;
+        int mod = 1e9+7;
+        for(int i=0;i<grid.size();i++){
+            for(int j=0;j<grid[0].size();j++){
+                for(int m=0;m<k;m++){
+                    if(j>0){
+                        f[i][j][(m+grid[i][j])%k]+=(f[i][j][(m+grid[i][j])%k]+f[i][j-1][m]%mod)%mod;
+                    }
+                    if(i>0){
+                        f[i][j][(m+grid[i][j])%k]=(f[i][j][(m+grid[i][j])%k]+f[i-1][j][m]%mod)%mod;
+                    }
+                }
+            }
+        }
+        return f[grid.size()-1][grid[0].size()-1][0];
+    }
+};
+```
+#### 时间复杂度为O(kn²)
+#### 空间复杂度为O(kn²)
+
+### 空间优化:
+#### 我们在运算的时候，可以发现，我们每次运算，都只会用到i-1的位置，前面的比如i-2的，我们是不会用到运算的，所以，我们可以用一个temp用来临时记录上一行的值。
+#### 
+```astro
+class Solution {
+public:
+    int numberOfPaths(vector<vector<int>>& grid, int k) {
+        vector<vector<int>> f(grid[0].size(), vector<int>(k, 0));
+        f[0][grid[0][0]%k]=1;
+        int mod = 1e9+7;
+        for(int i=0;i<grid.size();i++){
+            vector<vector<int>> temp(grid[0].size(), vector<int>(k, 0));
+            for(int j=0;j<grid[0].size();j++){
+                for(int m=0;m<k;m++){
+                    int current_mod = (m + grid[i][j]) % k;
+                    if(j > 0) {
+                        temp[j][current_mod] =(temp[j][current_mod] + temp[j-1][m])%mod;
+                    }
+                    if(i > 0) {
+                        temp[j][current_mod] = (temp[j][current_mod]+f[j][m])%mod;
+                    }
+                    if(i == 0 && j == 0)temp[0][grid[0][0] % k] = 1;
+                }
+            }
+            f = move(temp);
+        }
+        return f[grid[0].size()-1][0];
+    }
+};
+```
+#### 时间复杂度为O(kn²)
+#### 空间复杂度为O(kn)
+
