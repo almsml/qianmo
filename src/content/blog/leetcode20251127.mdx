@@ -1,0 +1,49 @@
+---
+title: Leetcode20251127
+description: Leetcode 2025年11月27号每日一题
+pubDate: 11 27 2025                    # 发布日期，格式：MM DD YYYY（月 日 年），单数字不补0
+image: https://raw.githubusercontent.com/almsml/image/main/5f9a8271-23f4-472c-afc6-d3cc66de148f.png          # 文章特色图片（可选，但推荐有，用于列表页卡片展示）
+categories:
+  - Leetcode            
+tags:
+  - leetcode
+  - c++                         
+badge: Waline                     
+---
+import LinkCard from "../../components/mdx/LinkCard.astro";
+
+## Original question link:
+<LinkCard
+  title="Leetcode20251127"
+  url="https://leetcode.cn/problems/maximum-subarray-sum-with-length-divisible-by-k/description/?envType=daily-question&envId=2025-11-27"
+  img="https://raw.githubusercontent.com/almsml/image/main/18e32fc9-e2ff-4742-b621-38a965b7f6cb.png"
+/>
+## Problem Analysis：
+#### 我们要求一个最大和的非空子数组，他的长度可以被k整除，所以我们可以用一个dp数组记录前面节点，能被k整除的数组能达到的最大值，因为是连续的，我们只需要比较i-k的值是否大于0，就可以知道，我们是否需要和前面的数组进行组合。
+#### 同时我们使用前缀和记录前面数组的和，我们只要n[i]-n[i-k]就可以知道k区间内的和。
+## Code:
+```astro
+class Solution {
+public:
+    long long maxSubarraySum(vector<int>& nums, int k) {
+        vector<long long> n(nums.size());
+        vector<long long> dp(nums.size());
+        n[0]=nums[0];
+        for(int i=1;i<nums.size();i++)n[i]+=n[i-1]+nums[i];
+        long long ans =-1e18;
+        for(int i=k-1;i<nums.size();i++){
+            if(i==k-1){
+                dp[i]=n[i];
+                ans = max(dp[i],ans);
+            }else{
+                dp[i] =n[i]-n[i-k]+((dp[i-k]>0)?dp[i-k]:0);
+                ans = max(dp[i],ans);
+            }
+        }
+        return ans;
+    }
+};
+```
+#### 时间复杂度为O(n)
+#### 空间复杂度为O(n)
+
